@@ -86,7 +86,7 @@
             });
 
             Users.Add(new User
-            { 
+            {
                 Id = 2,
                 Name = "Ana",
                 Surname = "Kovač",
@@ -103,9 +103,10 @@
                 Trips = new List<Trip> { AllTrips[1], AllTrips[3], AllTrips[4], AllTrips[0] }
             });
             
+
             ShowStartingMenu();
-           
-            
+
+
         }
         static void ShowStartingMenu()
         {
@@ -141,12 +142,263 @@
         }
         static void ShowUserMenu()
         {
+            Console.Clear();
+            Console.WriteLine("UPRAVLJANJE KORISNICIMA\n1 - Unos novog korisnika\n2 - Brisanje korisnika\n3 - Uređivanje korisnika\n4 - Pregled svih korsnika\n0 - Porvratak na glavni izbronik\n  ");
+            Console.Write("Odabir: ");
+            if (int.TryParse(Console.ReadLine(), out int userChoice))
+            {
+                switch (userChoice)
+                {
+                    case 1:
+                        var newUser = AddNewUser();
+                        Users.Add(newUser);
+                        Console.WriteLine("\nUnos uspješan. Pritisnite enter za nastavak");
+                        Console.ReadKey();
+                        ShowUserMenu();
+
+                        break;
+                    case 2:
+                        DeleteUser();
+                        break;
+                    case 3:
+                        UpdateUserInfo();
+                        break;
+                    case 4:
+                        ShowAllUsers();
+                        break;
+                    case 0:
+                        ShowStartingMenu();
+                        break;
+                    default:
+                        Console.WriteLine("Pogrešan unos, pokušajte ponovo.");
+                        break;
+                }
+            }
+            else
+            {
+                Console.WriteLine("Pogrešan unos, pokušajte ponovo.");
+
+            }
         }
         static void ShowTravelMenu()
         {
 
         }
-        
-        
+        static User AddNewUser()
+        {
+            var user = new User { Trips = new List<Trip>() };
+            
+            Console.Clear();
+            int id = 1;
+            foreach (var iduser in Users)
+                if (id == iduser.Id)
+                    id++;
+            
+            Console.Write("UNOS NOVOG KORISNIKA\nUnesite ime: ");
+            string username = Console.ReadLine() ?? string.Empty;
+            Console.Write("Unesite prezime: ");
+            string usersurname = Console.ReadLine() ?? string.Empty;
+            Console.Write("Unesite datum rođenja (YYYY-MM-DD): ");
+            if (!DateOnly.TryParse(Console.ReadLine(), out DateOnly dateofbirth))
+            {
+                Console.WriteLine("Pogrešan unos datuma, pritisnite bilo koju tipku za nastavak.");
+                Console.ReadKey();
+                ShowUserMenu();
+            }
+            else if( dateofbirth > DateOnly.FromDateTime(DateTime.Now))
+            {
+                Console.WriteLine("Datum rođenja ne može biti u budućnosti, pritisnite bilo koju tipku za nastavak.");
+                Console.ReadKey();
+                ShowUserMenu();
+            }
+            Console.WriteLine("Unesite putovanja korisnika (po id-u odvojeni zarezom, npr. 1,2,3): ");
+            string tripsInput = Console.ReadLine() ?? string.Empty;
+            int[] inputTripIds = Array.ConvertAll(tripsInput.Split(','), s => int.Parse(s.Trim()));
+            foreach (int tripId in inputTripIds)
+                    user.Trips.Add(AllTrips.Find(trip => trip.Id == tripId));
+
+
+
+            user.Name = username;
+            user.Surname = usersurname;
+            user.Id = id;
+            user.DateOfBirth = dateofbirth;
+
+
+
+
+            return user;
+        }
+        static void ShowAllUsers()
+        {
+            Console.Clear();
+            Console.WriteLine("\nISPIS SVIH KORISNIKA");
+            var SortedUsersByUsername = Users.OrderBy(user => user.Surname).ToList();
+
+            foreach (var user in SortedUsersByUsername)
+                Console.WriteLine($"{user.Id} - {user.Name} - {user.Surname} - {user.DateOfBirth}");
+
+            Console.WriteLine("\nISPIS SVIH KORISNIKA (GODINE > 20)");
+            
+            foreach (var user in SortedUsersByUsername)
+                if(DateOnly.FromDateTime(DateTime.Now).Year - user.DateOfBirth.Year > 20)
+                    Console.WriteLine($"{user.Id} - {user.Name} - {user.Surname} - {user.DateOfBirth}");
+
+            Console.WriteLine("\nISPIS SVIH KORISNIKA (PUTOVANJA > 2)");
+
+            foreach (var user in SortedUsersByUsername)
+                if (user.Trips.Count > 2)
+                    Console.WriteLine($"{user.Id} - {user.Name} - {user.Surname} - {user.DateOfBirth}");
+            Console.WriteLine("\nPritisnite bilo koju tipku za povratak na izbornik korisnika.");
+            Console.ReadKey();
+            ShowUserMenu();
+            
+            
+
+        }
+        static void DeleteUser()
+        {
+            Console.Clear();
+            Console.WriteLine("BRISANJE KORISNIKA");
+            Console.Write("Unesite ID korisnika kojeg želite obrisati: ");
+            if (!int.TryParse(Console.ReadLine(), out int idToDelete))
+            {
+                Console.WriteLine("Pogrešan unos , pritisnite bilo koju tipku za nastavak.");
+                Console.ReadKey();
+                ShowUserMenu();
+               
+            }
+            var userToDelete = Users.Find(user => user.Id == idToDelete);
+            if (userToDelete.Id == 0)
+            {
+                Console.WriteLine("ID korisnika nije pronaden , pritisnite bilo koju tipku za nastavak.");
+                Console.ReadKey();
+                ShowUserMenu();
+                
+            }
+            
+            Console.WriteLine($"Jeste li sigurni da zelite obrisati korisnika {idToDelete} (Pritisnite ENTER za potrvdru)");
+            if (Console.ReadKey().Key == ConsoleKey.Enter)
+            {
+                Users.Remove(Users.Find(user => user.Id == idToDelete));
+                Console.WriteLine($"Korisnik {idToDelete} je obrisan. Pritisnite bilo koju tipku za nastavak.");
+                Console.ReadKey();
+                ShowUserMenu();
+
+            }
+            else
+                ShowUserMenu();
+            
+        }
+        static void UpdateUserInfo()
+        {
+            Console.Clear();
+            Console.WriteLine("UREĐIVANJE KORISNIKA");
+            Console.Write("Unesite korisnika kojeg želite urediti (ID, ime , prezime): ");
+            var userInput = Console.ReadLine();
+            var userToUpdate = Users.Find(user => user.Name == userInput);
+            if(userToUpdate.Id == 0)    
+                Users.Find(user => user.Surname == userInput);
+            
+            if (!int.TryParse(userInput, out int idToUpdate) && userToUpdate.Id == 0)
+            {
+                Console.WriteLine("Korisnik nije pronađen , pritisnite bilo koju tipku za nastavak.");
+                Console.ReadKey();
+                ShowUserMenu();
+
+            }
+            if (userToUpdate.Id == 0)
+                userToUpdate = Users.Find(user => user.Id == idToUpdate);
+            if(userToUpdate.Id == 0)
+            {
+                Console.WriteLine("Korisnik nije pronađen , pritisnite bilo koju tipku za nastavak.");
+                Console.ReadKey();
+                ShowUserMenu();
+            }
+
+            Console.WriteLine($"Korisnik pronaden: {userToUpdate.Id} - {userToUpdate.Name} - {userToUpdate.Surname} - {userToUpdate.DateOfBirth}");
+            Console.Write("Unesite koji podatak želite urediti (1 - Ime, 2 - Prezime, 3 - Datum rođenja, 4 - Putovanja): ");
+            if (!int.TryParse(Console.ReadLine(), out int fieldToUpdate))
+            {
+                Console.WriteLine("Pogrešan unos , pritisnite bilo koju tipku za nastavak.");
+                Console.ReadKey();
+                ShowUserMenu();
+            }
+                int index = Users.FindIndex(user => user.Id == userToUpdate.Id);
+
+                switch (fieldToUpdate)
+            {
+                case 1:
+                    Console.Write("Unesite novo ime: ");
+                    
+                    userToUpdate.Name = Console.ReadLine() ?? string.Empty;
+                    Console.WriteLine("Jeste li sigurni da želite promijeniti navedene podatke? (Pritisnite ENTER za potrvdu)");
+
+                    if (Console.ReadKey().Key != ConsoleKey.Enter)
+                        ShowUserMenu();
+
+                    Users[index] = userToUpdate;
+                    Console.WriteLine($"Korisnikovi podaci su ažurirani. Pritisnite bilo koju tipku za nastavak.");
+                    Console.ReadKey();
+
+
+                    break;
+                case 2:
+                    Console.Write("Unesite novo prezime: ");
+                    
+                    userToUpdate.Surname = Console.ReadLine() ?? string.Empty;
+                    Console.WriteLine("Jeste li sigurni da želite promijeniti navedene podatke? (Pritisnite ENTER za potrvdu)");
+
+                    if (Console.ReadKey().Key != ConsoleKey.Enter)
+                        ShowUserMenu();
+                    Users[index] = userToUpdate;
+                    Console.WriteLine($"Korisnikovi podaci su ažurirani. Pritisnite bilo koju tipku za nastavak.");
+                    Console.ReadKey();
+                   break;
+                case 3:
+                    Console.Write("Unesite novi datum rođenja (YYYY-MM-DD): ");
+                    if (!DateOnly.TryParse(Console.ReadLine(), out DateOnly newDateOfBirth))
+                    {
+                        Console.WriteLine("Pogrešan unos datuma, pritisnite bilo koju tipku za nastavak.");
+                        Console.ReadKey();
+                        ShowUserMenu();
+                    }
+                    Console.WriteLine("Jeste li sigurni da želite promijeniti navedene podatke? (Pritisnite ENTER za potrvdu)");
+
+                    if (Console.ReadKey().Key != ConsoleKey.Enter)
+                        ShowUserMenu();
+                    userToUpdate.DateOfBirth = newDateOfBirth;
+                    Users[index] = userToUpdate;
+                    Console.WriteLine($"Korisnikovi podaci su ažurirani. Pritisnite bilo koju tipku za nastavak.");
+                    Console.ReadKey();
+                    
+                    break;
+                case 4:
+                    Console.WriteLine("Unesite putovanja korisnika (po id-u odvojeni zarezom, npr. 1,2,3): ");
+                    string tripsInput = Console.ReadLine() ?? string.Empty;
+                    int[] inputTripIds = Array.ConvertAll(tripsInput.Split(','), s => int.Parse(s.Trim()));
+                    foreach (int tripId in inputTripIds)
+                        userToUpdate.Trips.Add(AllTrips.Find(trip => trip.Id == tripId));
+                    Console.WriteLine("Jeste li sigurni da želite promijeniti navedene podatke? (Pritisnite ENTER za potrvdu)");
+                    if (Console.ReadKey().Key != ConsoleKey.Enter)
+                        ShowUserMenu();
+                    Users[index] = userToUpdate;
+                    Console.WriteLine($"Korisnikovi podaci su ažurirani. Pritisnite bilo koju tipku za nastavak.");
+                    Console.ReadKey();
+                    
+                   
+
+                    break;
+                
+                 default:
+                    Console.WriteLine("Pogrešan unos , pritisnite bilo koju tipku za nastavak.");
+                    Console.ReadKey();
+                    ShowUserMenu();
+                    break;
+
+            }
+
+            ShowUserMenu();
+        }
     }
 }
