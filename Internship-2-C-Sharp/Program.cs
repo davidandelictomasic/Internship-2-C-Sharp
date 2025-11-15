@@ -112,42 +112,43 @@
         {
             while (true) { 
             
-            Console.Clear();
-            Console.WriteLine("APLIKACIJA ZA EVIDENCIJU GORIVA\n1 - Korisnici \n2 - Putovanja\n3 - Statistika \n0 - Izlazak iz aplikacije\n");
-            Console.Write("Odabir: ");
+                Console.Clear();
+                Console.WriteLine("APLIKACIJA ZA EVIDENCIJU GORIVA\n1 - Korisnici \n2 - Putovanja\n3 - Statistika \n0 - Izlazak iz aplikacije\n");
+                Console.Write("Odabir: ");
 
-            if (int.TryParse(Console.ReadLine(), out int userChoice))
-            {
-                switch (userChoice)
+                if (int.TryParse(Console.ReadLine(), out int userChoice))
                 {
-                    case 1:
-                        ShowUserMenu();
-                        break;
-                    case 2:
-                        ShowTravelMenu();
-                        break;
-                    case 3:
-                        ShowStatisticsMenu();
-                        break;
-                    case 0:
-                        Console.WriteLine("Izlazak iz aplikacije...");
-                        break;
-                    default:
-                        Console.WriteLine("Pogrešan unos, pritisnite bilo koju tipku za nastavak.");
-                        Console.ReadKey();
-                        ShowStartingMenu();
-                        break;
+                    switch (userChoice)
+                    {
+                        case 1:
+                            ShowUserMenu();
+                            break;
+                        case 2:
+                            ShowTravelMenu();
+                            break;
+                        case 3:
+                            ShowStatisticsMenu();
+                            break;
+                        case 0:
+                            Console.WriteLine("Izlazak iz aplikacije...");
+                            break;
+                        default:
+                            Console.WriteLine("Pogrešan unos, pritisnite bilo koju tipku za nastavak.");
+                            Console.ReadKey();
+                            continue;
+                    }
                 }
-            }
-            else
-            {
-                Console.WriteLine("Pogrešan unos, pokušajte ponovo.");
-
-            }
+                else
+                {
+                    Console.WriteLine("Pogrešan unos, pokušajte ponovo.");
+                    Console.ReadKey();
+                    continue;
+                }
             }
         }
         static void ShowUserMenu()
         {
+            while (true) { 
             Console.Clear();
             Console.WriteLine("UPRAVLJANJE KORISNICIMA\n1 - Unos novog korisnika\n2 - Brisanje korisnika\n3 - Uređivanje korisnika\n4 - Pregled svih korsnika\n0 - Porvratak na glavni izbronik\n  ");
             Console.Write("Odabir: ");
@@ -156,13 +157,14 @@
                 switch (userChoice)
                 {
                     case 1:
-                        var newUser = AddNewUser();
-                        Users.Add(newUser);
+                        User? newNullableUser = AddNewUser();
+                           if (newNullableUser== null)
+                                continue;
+                        User newUser = (User)newNullableUser;
+                        Users.Add(newUser);                          
                         Console.WriteLine("\nUnos uspješan. Pritisnite enter za nastavak");
                         Console.ReadKey();
-                        ShowUserMenu();
-
-                        break;
+                         continue;
                     case 2:
                         DeleteUser();
                         break;
@@ -173,64 +175,70 @@
                         ShowAllUsers();
                         break;
                     case 0:
-                        ShowStartingMenu();
-                        break;
-                    default:
-                        Console.WriteLine("Pogrešan unos, pokušajte ponovo.");
-                        break;
-                }
-            }
-            else
-            {
-                Console.WriteLine("Pogrešan unos, pokušajte ponovo.");
-
-            }
-        }
-        static void ShowTravelMenu()
-        {
-            Console.Clear();
-            Console.WriteLine("UPRAVLJANJE PUTOVANJIMA\n1 - Unos novog putovanja\n2 - Brisanje putovanja\n3 - Uređivanje putovanja\n4 - Pregled svih putovanja\n5 - Izvještaji i analize\n0 - Porvratak na glavni izbronik\n  ");
-            Console.Write("Odabir: ");
-            if (int.TryParse(Console.ReadLine(), out int userChoice))
-            {
-                switch (userChoice)
-                {
-                    case 1:
-                        var newTrip = AddNewTrip();
-                        AllTrips.Add(newTrip);
-                        Console.WriteLine("\nUnos uspješan. Pritisnite enter za nastavak");
-                        Console.ReadKey();
-                        ShowTravelMenu();
-
-                        break;
-                    case 2:
-                        DeleteTrip();
-                        break;
-                    case 3:
-                        UpdateTravelInfo();
-                        break;
-                    case 4:
-                        ShowAllTrips();
-                        break;
-                    case 5:
-                        ShowReports();
-                        break;
-                    case 0:
-                        ShowStartingMenu();
-                        break;
+                            return;
                     default:
                         Console.WriteLine("Pogrešan unos, pokušajte ponovo.");
                         Console.ReadKey();
-                        ShowTravelMenu();
-                        break;
+                            continue;
                 }
             }
             else
             {
                 Console.WriteLine("Pogrešan unos, pokušajte ponovo.");
                 Console.ReadKey();
-                ShowTravelMenu();
+                    continue;
 
+            }
+        }
+        }
+        static void ShowTravelMenu()
+        {
+            while (true)
+            {
+                Console.Clear();
+                Console.WriteLine("UPRAVLJANJE PUTOVANJIMA\n1 - Unos novog putovanja\n2 - Brisanje putovanja\n3 - Uređivanje putovanja\n4 - Pregled svih putovanja\n5 - Izvještaji i analize\n0 - Porvratak na glavni izbronik\n  ");
+                Console.Write("Odabir: ");
+                if (int.TryParse(Console.ReadLine(), out int userChoice))
+                {
+                    switch (userChoice)
+                    {
+                        case 1:
+                            var newNullableTrip = AddNewTrip();
+                            if (newNullableTrip == null)
+                                continue;
+                            var newTrip = (Trip)newNullableTrip;
+                            AllTrips.Add(newTrip);
+                            Console.WriteLine("\nUnos uspješan. Pritisnite enter za nastavak");
+                            Console.ReadKey();
+                            continue;
+                        case 2:
+                            DeleteTrip();
+                            break;
+                        case 3:
+                            UpdateTravelInfo();
+                            break;
+                        case 4:
+                            ShowAllTrips();
+                            break;
+                        case 5:
+                            ShowReports();
+                            break;
+                        case 0:
+                            ShowStartingMenu();
+                            break;
+                        default:
+                            Console.WriteLine("Pogrešan unos, pokušajte ponovo.");
+                            Console.ReadKey();
+                            continue;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Pogrešan unos, pokušajte ponovo.");
+                    Console.ReadKey();
+                    continue;
+
+                }
             }
         }
         static void ShowStatisticsMenu()
@@ -275,15 +283,13 @@
             }
         }
 
-        static User AddNewUser()
+        static User? AddNewUser()
         {
             var user = new User { Trips = new List<Trip>() };
 
             Console.Clear();
-            int id = 1;
-            foreach (var iduser in Users)
-                if (id == iduser.Id)
-                    id++;
+            int id = Users.Count == 0 ? 1 : Users.Max(u => u.Id) + 1;
+
 
             Console.Write("UNOS NOVOG KORISNIKA\nUnesite ime: ");
             string username = Console.ReadLine() ?? string.Empty;
@@ -294,13 +300,13 @@
             {
                 Console.WriteLine("Pogrešan unos datuma, pritisnite bilo koju tipku za nastavak.");
                 Console.ReadKey();
-                ShowUserMenu();
+                return null;
             }
             else if (dateofbirth > DateOnly.FromDateTime(DateTime.Now))
             {
                 Console.WriteLine("Datum rođenja ne može biti u budućnosti, pritisnite bilo koju tipku za nastavak.");
                 Console.ReadKey();
-                ShowUserMenu();
+                return null;
             }
             Console.WriteLine("Unesite putovanja korisnika (po id-u odvojeni zarezom, npr. 1,2,3): ");
             string tripsInput = Console.ReadLine() ?? string.Empty;
@@ -308,15 +314,10 @@
             foreach (int tripId in inputTripIds)
                 user.Trips.Add(AllTrips.Find(trip => trip.Id == tripId));
 
-
-
             user.Name = username;
             user.Surname = usersurname;
             user.Id = id;
             user.DateOfBirth = dateofbirth;
-
-
-
 
             return user;
         }
@@ -327,7 +328,7 @@
             if (Users.Count == 0) {
                 Console.WriteLine("Ne postoji ni jedan korisnik, pritisnite bilo koji tipku za nastavak.");
                 Console.ReadKey();
-                ShowUserMenu();
+                return;
             }
             var SortedUsersByUsername = Users.OrderBy(user => user.Surname).ToList();
 
@@ -347,7 +348,7 @@
                     Console.WriteLine($"{user.Id} - {user.Name} - {user.Surname} - {user.DateOfBirth}");
             Console.WriteLine("\nPritisnite bilo koju tipku za povratak na izbornik korisnika.");
             Console.ReadKey();
-            ShowUserMenu();
+            return;
 
 
 
@@ -361,7 +362,7 @@
             {
                 Console.WriteLine("Pogrešan unos , pritisnite bilo koju tipku za nastavak.");
                 Console.ReadKey();
-                ShowUserMenu();
+                return;
 
             }
             var userToDelete = Users.Find(user => user.Id == idToDelete);
@@ -369,7 +370,7 @@
             {
                 Console.WriteLine("ID korisnika nije pronaden , pritisnite bilo koju tipku za nastavak.");
                 Console.ReadKey();
-                ShowUserMenu();
+                return;
 
             }
 
@@ -379,11 +380,11 @@
                 Users.Remove(Users.Find(user => user.Id == idToDelete));
                 Console.WriteLine($"Korisnik {idToDelete} je obrisan. Pritisnite bilo koju tipku za nastavak.");
                 Console.ReadKey();
-                ShowUserMenu();
+                return;
 
             }
             else
-                ShowUserMenu();
+                return;
 
         }
         static void UpdateUserInfo()
@@ -400,7 +401,7 @@
             {
                 Console.WriteLine("Korisnik nije pronađen , pritisnite bilo koju tipku za nastavak.");
                 Console.ReadKey();
-                ShowUserMenu();
+                return;
 
             }
             if (userToUpdate.Id == 0)
@@ -409,7 +410,7 @@
             {
                 Console.WriteLine("Korisnik nije pronađen , pritisnite bilo koju tipku za nastavak.");
                 Console.ReadKey();
-                ShowUserMenu();
+                return;
             }
 
             Console.WriteLine($"Korisnik pronaden: {userToUpdate.Id} - {userToUpdate.Name} - {userToUpdate.Surname} - {userToUpdate.DateOfBirth}");
@@ -418,7 +419,7 @@
             {
                 Console.WriteLine("Pogrešan unos , pritisnite bilo koju tipku za nastavak.");
                 Console.ReadKey();
-                ShowUserMenu();
+                return;
             }
             int index = Users.FindIndex(user => user.Id == userToUpdate.Id);
 
@@ -431,7 +432,7 @@
                     Console.WriteLine("Jeste li sigurni da želite promijeniti navedene podatke? (Pritisnite ENTER za potrvdu)");
 
                     if (Console.ReadKey().Key != ConsoleKey.Enter)
-                        ShowUserMenu();
+                        return;
 
                     Users[index] = userToUpdate;
                     Console.WriteLine($"Korisnikovi podaci su ažurirani. Pritisnite bilo koju tipku za nastavak.");
@@ -446,7 +447,7 @@
                     Console.WriteLine("Jeste li sigurni da želite promijeniti navedene podatke? (Pritisnite ENTER za potrvdu)");
 
                     if (Console.ReadKey().Key != ConsoleKey.Enter)
-                        ShowUserMenu();
+                        return;
                     Users[index] = userToUpdate;
                     Console.WriteLine($"Korisnikovi podaci su ažurirani. Pritisnite bilo koju tipku za nastavak.");
                     Console.ReadKey();
@@ -457,12 +458,12 @@
                     {
                         Console.WriteLine("Pogrešan unos datuma, pritisnite bilo koju tipku za nastavak.");
                         Console.ReadKey();
-                        ShowUserMenu();
+                        return;
                     }
                     Console.WriteLine("Jeste li sigurni da želite promijeniti navedene podatke? (Pritisnite ENTER za potrvdu)");
 
                     if (Console.ReadKey().Key != ConsoleKey.Enter)
-                        ShowUserMenu();
+                        return;
                     userToUpdate.DateOfBirth = newDateOfBirth;
                     Users[index] = userToUpdate;
                     Console.WriteLine($"Korisnikovi podaci su ažurirani. Pritisnite bilo koju tipku za nastavak.");
@@ -477,7 +478,7 @@
                         userToUpdate.Trips.Add(AllTrips.Find(trip => trip.Id == tripId));
                     Console.WriteLine("Jeste li sigurni da želite promijeniti navedene podatke? (Pritisnite ENTER za potrvdu)");
                     if (Console.ReadKey().Key != ConsoleKey.Enter)
-                        ShowUserMenu();
+                        return;
                     Users[index] = userToUpdate;
                     Console.WriteLine($"Korisnikovi podaci su ažurirani. Pritisnite bilo koju tipku za nastavak.");
                     Console.ReadKey();
@@ -489,14 +490,13 @@
                 default:
                     Console.WriteLine("Pogrešan unos , pritisnite bilo koju tipku za nastavak.");
                     Console.ReadKey();
-                    ShowUserMenu();
-                    break;
+                    return;
 
             }
 
-            ShowUserMenu();
+            return;
         }
-        static Trip AddNewTrip()
+        static Trip? AddNewTrip()
         {
             Console.Clear();
             Console.WriteLine("UREĐIVANJE PUTOVANJA");
@@ -508,7 +508,7 @@
             {
                 Console.WriteLine("Korisnik nije pronađen , pritisnite bilo koju tipku za nastavak.");
                 Console.ReadKey();
-                ShowUserMenu();
+                return null;
 
             }
             if (userToUpdate.Id == 0)
@@ -517,7 +517,7 @@
             {
                 Console.WriteLine("Korisnik nije pronađen , pritisnite bilo koju tipku za nastavak.");
                 Console.ReadKey();
-                ShowUserMenu();
+                return null;
             }
             Console.WriteLine($"Korisnik pronaden: {userToUpdate.Id} - {userToUpdate.Name} - {userToUpdate.Surname}");
 
@@ -529,44 +529,39 @@
             {
                 Console.WriteLine("Pogrešan unos datuma, pritisnite bilo koju tipku za nastavak.");
                 Console.ReadKey();
-                ShowTravelMenu();
+                return null;
             }
             else if (dateoftrip > DateOnly.FromDateTime(DateTime.Now))
             {
                 Console.WriteLine("Datum rođenja ne može biti u budućnosti, pritisnite bilo koju tipku za nastavak.");
                 Console.ReadKey();
-                ShowTravelMenu();
+                return null;
             }
             Console.Write("Unesite kilometražu: ");
-            if (!double.TryParse(Console.ReadLine(), out double distance))
+            if (!double.TryParse(Console.ReadLine(), out double distance) || distance < 0)
             {
                 Console.WriteLine("Pogrešan unos , pritisnite bilo koju tipku za nastavak.");
                 Console.ReadKey();
-                ShowTravelMenu();
+                return null;
 
             }
             Console.Write("Unesite potrošeno gorivo (L): ");
-            if (!double.TryParse(Console.ReadLine(), out double fuelConsumed))
+            if (!double.TryParse(Console.ReadLine(), out double fuelConsumed) || fuelConsumed < 0)
             {
                 Console.WriteLine("Pogrešan unos, pritisnite bilo koju tipku za nastavak.");
                 Console.ReadKey();
-                ShowTravelMenu();
+                return null;
 
             }
             Console.Write("Unesite cijenu po litri: ");
-            if (!double.TryParse(Console.ReadLine(), out double costOfFuelPerLiter))
+            if (!double.TryParse(Console.ReadLine(), out double costOfFuelPerLiter) || costOfFuelPerLiter < 0)
             {
                 Console.WriteLine("Pogrešan unos, pritisnite bilo koju tipku za nastavak.");
                 Console.ReadKey();
-                ShowTravelMenu();
+                return null;
 
             }
-            if (costOfFuelPerLiter < 0)
-            {
-                Console.WriteLine("Pogrešan unos, pritisnite bilo koju tipku za nastavak.");
-                Console.ReadKey();
-                ShowTravelMenu();
-            }
+            
             trip.DateOfTrip = dateoftrip;
             trip.Distance = distance;
             trip.FuelConsumed = fuelConsumed;
@@ -580,6 +575,11 @@
         {
             Console.Clear();
             Console.WriteLine("ISPIS SVIH PUTOVANJA\n");
+            if (AllTrips.Count == 0) {
+                Console.WriteLine("Ni jedno putovanje ne postoji.");
+                Console.ReadKey();
+                return;
+            }
             var allTrips = AllTrips.OrderBy(trip => trip.Id).ToList();
 
             foreach (var trip in allTrips)
@@ -612,7 +612,7 @@
                 Console.WriteLine($"Putovanje #{trip.Id}\nDatum: {trip.DateOfTrip}\nKilometri: {trip.Distance}\nGorivo: {trip.FuelConsumed}\nCijena po litri: {trip.CostOfFuelPerLiter}\nUkupno: {trip.TotalCost}\n");
             Console.WriteLine("\nPritisnite bilo koju tipku za povratak na izbornik korisnika.");
             Console.ReadKey();
-            ShowTravelMenu();
+            return;
 
 
 
@@ -625,8 +625,7 @@
             if (!int.TryParse(Console.ReadLine(), out int userChoice))
             {
                 Console.WriteLine("Pogrešan unos , pritisnite bilo koju tipku za nastavak.");
-                Console.ReadKey();
-                ShowTravelMenu();
+                Console.ReadKey();               
                 return;
 
             }
@@ -637,8 +636,7 @@
                     if (!int.TryParse(Console.ReadLine(), out int idToDelete))
                     {
                         Console.WriteLine("Pogrešan unos, pritisnite bilo koju tipku za nastavak.");
-                        Console.ReadKey();
-                        ShowTravelMenu();
+                        Console.ReadKey();                       
                         return;
 
                     }
@@ -646,8 +644,7 @@
                     if (tripToDelete.Id == 0)
                     {
                         Console.WriteLine("ID putovanja nije pronaden, pritisnite bilo koju tipku za nastavak.");
-                        Console.ReadKey();
-                        ShowTravelMenu();
+                        Console.ReadKey();                        
                         return;
 
                     }
@@ -660,22 +657,20 @@
                         {
 
                             Console.WriteLine($"Putovanje uspješno obrisano. Pritisnite bilo koju tipku za nastavak.");
-                            Console.ReadKey();
-                            ShowTravelMenu();
+                            Console.ReadKey();                            
                             return;
                         }
                     }
-                    else
-                        ShowTravelMenu();
-                    return;
-
+                    else                        
+                        return;
+                    break;
                 case 2:
                     Console.Write("Unesite od koje cijene želite izbrisati sva skuplja putovanja: ");
                     if (!double.TryParse(Console.ReadLine(), out double priceToDelHigher))
                     {
                         Console.WriteLine("Pogrešan unos , pritisnite bilo koju tipku za nastavak.");
                         Console.ReadKey();
-                        ShowTravelMenu();
+                        return;
 
                     }
                     Console.WriteLine($"Jeste li sigurni da zelite obrisati putovanja skuplja od unesene cijene (Pritisnite ENTER za potrvdru)");
@@ -683,43 +678,37 @@
                     {
                         AllTrips.RemoveAll(trip => trip.TotalCost > priceToDelHigher);
                         Console.WriteLine($"Putovanje uspješno obrisano. Pritisnite bilo koju tipku za nastavak.");
-                        Console.ReadKey();
-                        ShowTravelMenu();
+                        Console.ReadKey();                        
                         return;
 
                     }
-                    else
-                        ShowTravelMenu();
-                    return;
-
+                    else                        
+                        return;
+                    
                 case 3:
                     Console.Write("Unesite od koje cijene želite izbrisati sva jeftinija putovanja: ");
                     if (!double.TryParse(Console.ReadLine(), out double priceToDelLower))
                     {
                         Console.WriteLine("Pogrešan unos , pritisnite bilo koju tipku za nastavak.");
-                        Console.ReadKey();
-                        ShowTravelMenu();
+                        Console.ReadKey();                        
                         return;
 
                     }
                     Console.WriteLine($"Jeste li sigurni da zelite obrisati putovanja jeftinije od unesene cijene (Pritisnite ENTER za potrvdru)");
                     if (Console.ReadKey().Key == ConsoleKey.Enter)
                     {
-                        AllTrips.RemoveAll(trip => trip.TotalCost > priceToDelLower);
+                        AllTrips.RemoveAll(trip => trip.TotalCost < priceToDelLower);
                         Console.WriteLine($"Putovanje uspješno obrisano. Pritisnite bilo koju tipku za nastavak.");
                         Console.ReadKey();
-                        ShowTravelMenu();
                         return;
 
                     }
                     else
-                        ShowTravelMenu();
-                    return;
+                        return;                
 
                 default:
                     Console.WriteLine("Pogrešan unos , pritisnite bilo koju tipku za nastavak.");
-                    Console.ReadKey();
-                    ShowTravelMenu();
+                    Console.ReadKey();                    
                     return;
 
 
@@ -741,7 +730,7 @@
             {
                 Console.WriteLine("Korisnik nije pronađen, pritisnite bilo koju tipku za nastavak.");
                 Console.ReadKey();
-                ShowTravelMenu();
+                return;
 
             }
             var tripToUpdate = AllTrips.Find(trip => trip.Id == idToUpdate);
@@ -749,7 +738,7 @@
             {
                 Console.WriteLine("Putovanje nije pronađen0, pritisnite bilo koju tipku za nastavak.");
                 Console.ReadKey();
-                ShowTravelMenu();
+                return;
             }
 
             Console.WriteLine($"Putovanje pronađeno: {tripToUpdate.Id} - {tripToUpdate.DateOfTrip}");
@@ -758,7 +747,7 @@
             {
                 Console.WriteLine("Pogrešan unos , pritisnite bilo koju tipku za nastavak.");
                 Console.ReadKey();
-                ShowTravelMenu();
+                return;
             }
             int index = AllTrips.FindIndex(trip => trip.Id == tripToUpdate.Id);
 
@@ -770,78 +759,72 @@
                     {
                         Console.WriteLine("Pogrešan unos datuma, pritisnite bilo koju tipku za nastavak.");
                         Console.ReadKey();
-                        ShowTravelMenu();
+                        return;
                     }
                     else if (newdateoftrip > DateOnly.FromDateTime(DateTime.Now))
                     {
                         Console.WriteLine("Datum rođenja ne može biti u budućnosti, pritisnite bilo koju tipku za nastavak.");
                         Console.ReadKey();
-                        ShowTravelMenu();
+                        return;
                     }
 
 
                     Console.WriteLine("Jeste li sigurni da želite promijeniti navedene podatke? (Pritisnite ENTER za potrvdu)");
 
                     if (Console.ReadKey().Key != ConsoleKey.Enter)
-                        ShowTravelMenu();
+                        return;
                     tripToUpdate.DateOfTrip = newdateoftrip;
                     AllTrips[index] = tripToUpdate;
                     Console.WriteLine($"Podaci putovanja su ažurirani. Pritisnite bilo koju tipku za nastavak.");
                     Console.ReadKey();
-                    ShowTravelMenu();
+                    return;
 
-                    break;
+                    
                 case 2:
                     Console.Write("Unesite novu kilometrazi: ");
                     if (!double.TryParse(Console.ReadLine(), out double newDistanceOfTrip) || newDistanceOfTrip <= 0)
                     {
                         Console.WriteLine("Pogrešan unos, pritisnite bilo koju tipku za nastavak");
                         Console.ReadKey();
-                        ShowTravelMenu();
-
-
+                        return;
                     }
                     tripToUpdate.Distance = newDistanceOfTrip;
                     Console.WriteLine("Jeste li sigurni da želite promijeniti navedene podatke? (Pritisnite ENTER za potrvdu)");
 
                     if (Console.ReadKey().Key != ConsoleKey.Enter)
-                        ShowTravelMenu();
+                        return;
                     AllTrips[index] = tripToUpdate;
                     Console.WriteLine($"Podaci putovanja su ažurirani. Pritisnite bilo koju tipku za nastavak.");
                     Console.ReadKey();
-                    ShowTravelMenu();
+                    return;
 
-                    break;
+                    
                 case 3:
                     Console.Write("Unesite novi iznos potrošenog goriva: ");
                     if (!double.TryParse(Console.ReadLine(), out double newFuelConsumed) || newFuelConsumed <= 0)
                     {
                         Console.WriteLine("Pogrešan unos, pritisnite bilo koju tipku za nastavak");
                         Console.ReadKey();
-                        ShowTravelMenu();
-
-
+                        return;
                     }
                     tripToUpdate.FuelConsumed = newFuelConsumed;
                     tripToUpdate.TotalCost = newFuelConsumed * tripToUpdate.CostOfFuelPerLiter;
                     Console.WriteLine("Jeste li sigurni da želite promijeniti navedene podatke? (Pritisnite ENTER za potrvdu)");
 
                     if (Console.ReadKey().Key != ConsoleKey.Enter)
-                        ShowTravelMenu();
+                        return;
 
                     AllTrips[index] = tripToUpdate;
                     Console.WriteLine($"Podaci putovanja su ažurirani. Pritisnite bilo koju tipku za nastavak.");
                     Console.ReadKey();
-                    ShowTravelMenu();
-
-                    break;
+                    return;
                 case 4:
                     Console.Write("Unesite novu cijenu goriva: ");
                     if (!double.TryParse(Console.ReadLine(), out double newCostOfFuel) || newCostOfFuel <= 0)
                     {
                         Console.WriteLine("Pogrešan unos, pritisnite bilo koju tipku za nastavak");
                         Console.ReadKey();
-                        ShowTravelMenu();
+                        return;
 
 
                     }
@@ -851,25 +834,20 @@
                     Console.WriteLine("Jeste li sigurni da želite promijeniti navedene podatke? (Pritisnite ENTER za potrvdu)");
 
                     if (Console.ReadKey().Key != ConsoleKey.Enter)
-                        ShowTravelMenu();
+                        return;
                     AllTrips[index] = tripToUpdate;
                     Console.WriteLine($"Podaci putovanja su ažurirani. Pritisnite bilo koju tipku za nastavak.");
                     Console.ReadKey();
-                    ShowTravelMenu();
-
-
-
-                    break;
+                    return;
 
                 default:
                     Console.WriteLine("Pogrešan unos , pritisnite bilo koju tipku za nastavak.");
                     Console.ReadKey();
-                    ShowUserMenu();
-                    break;
+                    return;
 
             }
 
-            ShowUserMenu();
+           
         }
         static void ShowReports()
         {
@@ -885,7 +863,7 @@
             {
                 Console.WriteLine("Korisnik nije pronađen , pritisnite bilo koju tipku za nastavak.");
                 Console.ReadKey();
-                ShowTravelMenu();
+                return;
 
             }
             if (userForReport.Id == 0)
@@ -894,7 +872,7 @@
             {
                 Console.WriteLine("Korisnik nije pronađen , pritisnite bilo koju tipku za nastavak.");
                 Console.ReadKey();
-                ShowTravelMenu();
+                return;
             }
 
             Console.WriteLine($"Korisnik pronaden: {userForReport.Id} - {userForReport.Name}");
@@ -914,14 +892,14 @@
             {
                 Console.WriteLine("Pogrešan unos datuma, pritisnite bilo koju tipku za nastavak.");
                 Console.ReadKey();
-                ShowTravelMenu();
+                return;
             }
             var tripFiltered = userForReport.Trips.FindAll(trip => trip.DateOfTrip == dateToSearch).ToArray();
             if (tripFiltered.Length == 0)
             {
                 Console.WriteLine("Ni jedno putovanje nije pronađeno, pritisnite bilo koju tipku za nastavak.");
                 Console.ReadKey();
-                ShowTravelMenu();
+                return;
             }
             foreach (var trip in tripFiltered)
             {
@@ -929,7 +907,7 @@
             }
 
             Console.ReadKey();
-            ShowTravelMenu();
+            return;
 
         }
         static void HighestTotalCostUser()
